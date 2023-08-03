@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdatePublisherAPIRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdatePublisherAPIRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,23 @@ class UpdatePublisherAPIRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'max:256',
+            ],
+            'city' => [
+                'max:256',
+            ],
+            'country_code' => [
+                'max:3',
+            ]
         ];
+    }
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => 'Validation errors',
+            'data' => $validator->errors()
+        ]));
     }
 }

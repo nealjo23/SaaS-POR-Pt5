@@ -12,7 +12,28 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::with('author')->paginate(10);
+
+        $books->getCollection()->transform(function ($book) {
+            // Retrieve the author's given name
+            $givenName = $book->author->given_name ?? '';
+
+            // Retrieve the author's family name and handle null/empty values
+            $familyName = $book->author->family_name ?? '';
+
+            // Concatenate the given name and family name with a space in between
+            $authorName = trim($givenName . ' ' . $familyName);
+
+            // Append the "author_name" field to the book object
+            $book->author_name = $authorName;
+
+            // Remove the "author" relation to prevent duplicate data in the response
+            unset($book->author);
+
+            return $book;
+        });
+
+        return view('books.index', compact(['books']));
     }
 
     /**

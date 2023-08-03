@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Country;
+use App\Models\Genre;
+use App\Models\Publisher;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call([
+            UserSeeder::class,
+            CountrySeeder::class,
+            PublisherSeeder::class,
+            GenreSeeder::class,
+            AuthorSeeder::class,
+            BookSeeder::class,
+            ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+//        // Update publishers with country_id based on existing country_code
+//        $publishers = Publisher::all();
+//        foreach ($publishers as $publisher) {
+//            $country = Country::where('code_3', $publisher->country_code)->first();
+//            if ($country) {
+//                $publisher->country_id = $country->id;
+//                $publisher->save();
+//            }
+//        }
     }
 }

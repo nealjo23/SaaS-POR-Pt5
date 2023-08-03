@@ -8,4 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Author extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'given_name',
+        'family_name',
+        'is_company'
+    ];
+
+    protected $casts = [
+        'is_company' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function books() {
+        return $this->hasMany(Book::class);
+    }
 }
