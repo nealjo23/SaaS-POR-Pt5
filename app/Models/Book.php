@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Book extends Model
 {
@@ -90,4 +91,18 @@ class Book extends Model
             'author_family' => $authorFamily,
         ];
     }
+
+    // Local scope to exclude 'UNKNOWN' book
+    public function scopeExcludeUnknown($query)
+    {
+        return $query->where('title', '!=', 'UNKNOWN');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('excludeUnknown', function (Builder $builder) {
+            $builder->where('title', '!=', 'UNKNOWN');
+        });
+    }
+
 }

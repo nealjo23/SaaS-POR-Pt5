@@ -28,4 +28,10 @@ class Genre extends Model
     'created_at' => 'datetime',
     'updated_at' => 'datetime',
 ];
+
+    public function getNameAttribute($value)
+    {
+        return $value ?? 'Unknown Genre';
+    }
+
 }

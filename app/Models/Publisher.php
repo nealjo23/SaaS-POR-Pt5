@@ -38,4 +38,10 @@ class Publisher extends Model
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    public function getNameAttribute($value)
+    {
+        return $value ?? 'Unknown Publisher';
+    }
+
 }

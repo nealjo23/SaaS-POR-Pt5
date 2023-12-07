@@ -25,8 +25,11 @@ class Author extends Model
         return $this->hasMany(Book::class);
     }
 
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
+        if (empty($this->given_name) && empty($this->family_name)) {
+            return 'Unknown Author';
+        }
         return trim($this->given_name . ' ' . $this->family_name);
     }
 

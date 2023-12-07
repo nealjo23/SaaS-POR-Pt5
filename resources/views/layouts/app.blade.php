@@ -40,7 +40,7 @@
                     <div class="rounded-lg bg-white my-4 mx-auto p-4 w-full sm:w-4/5">
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('docs/images/library-icon.svg') }}" alt="Library Icon" class="h-10 w-auto">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">SaaS S1 2023 Library System</h3>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">John's SaaS S1 2023 Library System</h3>
                         </div>
                     </div>
 
