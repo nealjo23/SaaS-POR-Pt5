@@ -24,4 +24,10 @@ class Author extends Model
     public function books() {
         return $this->hasMany(Book::class);
     }
+
+    public function getFullNameAttribute()
+    {
+        return trim($this->given_name . ' ' . $this->family_name);
+    }
+
 }

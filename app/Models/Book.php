@@ -32,6 +32,10 @@ class Book extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+    public function getIsbnAttribute()
+    {
+        return $this->isbn_13 ?: $this->isbn_10 ?: null;
+    }
 
     public function author()
     {
