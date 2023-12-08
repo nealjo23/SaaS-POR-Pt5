@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
+
 @section('content')
+    @if(session('success'))
+        <h2 class="text-center font-semibold text-xl text-red-400 leading-tight" style="color: red;">
+            {{ session('success') }}
+        </h2>
+    @endif
+    {{-- If my styles were working ....--}}
+    {{--@if(session('success'))--}}
+    {{--    <div class="alert alert-success">--}}
+    {{--        {{ session('success') }}--}}
+    {{--    </div>--}}
+    {{--@endif--}}
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
         {{ __('Books') }}
     </h2>
@@ -13,7 +25,7 @@
                         <thead class="border border-stone-300">
                         <tr class="bg-stone-300">
                             <th class="p-2 text-left">
-                                <a href="{{ route('books.create') }}"
+                                <a href="{{ route('books.create', ['sort' => request()->sort, 'page' => request()->page]) }}"
                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                                     Create New Book</a>
                             </th>
@@ -51,18 +63,18 @@
                         </tr>
                         </thead>
                         <tbody class="border border-stone-300">
-                        @foreach($books as $book)
+                        @forelse($books as $book)
                             <tr class="border-b border-stone-300 hover:bg-stone-200">
                                 <td class="p-2 text-left">{{ $book->title }}</td>
                                 <td class="p-2 text-left">{{ $book->genre_name ?? 'N/A' }}</td>
                                 <td class="p-2 text-left">{{ optional($book->author)->full_name }}</td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('books.show', $book) }}" class="text-blue-500 hover:text-blue-700">
+                                    <a href="{{ route('books.show', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-blue-500 hover:text-blue-700">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('books.edit', $book) }}" class="text-green-500 hover:text-green-700">
+                                    <a href="{{ route('books.edit', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-green-500 hover:text-green-700">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                 </td>
@@ -70,13 +82,21 @@
                                     <form action="{{ route('books.destroy', $book) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this book?');" class="text-red-500 hover:text-red-700">
+                                        <input type="hidden" name="sort" value="{{ request()->sort }}">
+                                        <input type="hidden" name="page" value="{{ request()->page }}">
+                                        <button type="submit" onclick="return confirm('\n{{ $book->title }}\n\nAre you sure you want to delete this book?');" class="text-red-500 hover:text-red-700">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="p-2 text-center text-black font-bold">
+                                    No books to show
+                                </td>
+                            </tr>
+                        @endforelse
                         </tbody>
                         <tfoot class="border border-stone-300">
                         <tr>

@@ -4,7 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>John Ass 5</title>
+        @php
+            $currentRouteName = Route::currentRouteName();
+            $routeParts = explode('.', $currentRouteName);
+            $pageTitle = $routeParts[0] ? 'John SaaS - ' . ucfirst($routeParts[0]) : 'John SaaS Ass 5';
+        @endphp
+        <title>{{ $pageTitle }}</title>
 
         <!-- Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

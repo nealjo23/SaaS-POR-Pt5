@@ -81,6 +81,11 @@ class BookController extends Controller
 
         $currentSort = $request->input('sort', ''); // Default to empty string if not set
 
+        session([
+            'last_sort' => $request->input('sort', ''),
+            'last_page' => $request->input('page', 1)
+        ]);
+
         return view('books.index', compact('books', 'currentSort'));
     }
 
@@ -89,9 +94,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        $genres = Genre::all();
-        $authors = Author::all();
-        $publishers = Publisher::all();
+        $genres = Genre::orderBy('name')->get();
+        $authors = Author::orderBy('family_name')->get();
+        $publishers = Publisher::orderBy('name')->get();
 
         return view('books.create', compact('genres', 'authors', 'publishers'));
     }
@@ -101,7 +106,6 @@ class BookController extends Controller
      */
      public function store(Request $request)
     {
-        // Validate the request data
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'subtitle' => 'nullable|max:255',
@@ -111,48 +115,55 @@ class BookController extends Controller
             'isbn_13' => 'nullable|size:13|unique:books',
             'height' => 'nullable|integer',
             'genre_id' => 'nullable|exists:genres,id',
-            'sub_genre_id' => 'nullable|exists:genres,id', // Assuming sub-genres are also stored in 'genres' table
+            'sub_genre_id' => 'nullable|exists:genres,id',
             'author_id' => 'nullable|exists:authors,id',
             'publisher_id' => 'nullable|exists:publishers,id',
         ]);
 
-        // Create a new book instance
         $book = new Book($validatedData);
 
-        // Save the book to the database
         $book->save();
 
-        // Redirect the user with a success message
-        return redirect()->route('books.index')->with('success', 'Book created successfully.');
+        return redirect()->route('books.index', [
+            'sort' => session('last_sort', ''),
+            'page' => session('last_page', 1)
+        ])->with('success', 'Book created successfully.');
     }
 
 
-    // Show a single book
-    public function show(Book $book)
+    public function show($id)
     {
-        $book->load(['author', 'genre', 'subGenre', 'publisher']);
-        $book->genre_name = $this->getGenreName($book->genre);
-        $book->sub_genre_name = $this->getSubGenreName($book->subGenre);
-        $book->publisher_name = $this->getPublisherName($book->publisher);
+        $book = Book::with(['author', 'genre', 'subGenre', 'publisher'])->find($id);
+
+        if (!$book) {
+            return response()->view('errors.book-not-found', [], 404);
+        }
+
         return view('books.show', compact('book'));
     }
 
-    // Show form to edit a book
-    public function edit(Book $book)
+
+    public function edit($id)
     {
-        $genres = Genre::all();
-        $authors = Author::all();
-        $publishers = Publisher::all();
+        $book = Book::find($id);
+
+        if (!$book) {
+            return response()->view('errors.book-not-found', [], 404);
+        }
+
+        $genres = Genre::orderBy('name')->get();
+        $authors = Author::orderBy('family_name')->get();
+        $publishers = Publisher::orderBy('name')->get();
 
         return view('books.edit', compact('book', 'genres', 'authors', 'publishers'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Book $book)
     {
-        // Validate the request data
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'subtitle' => 'nullable|max:255',
@@ -167,17 +178,25 @@ class BookController extends Controller
             'publisher_id' => 'nullable|exists:publishers,id',
         ]);
 
-        // Update the book with validated data
         $book->update($validatedData);
 
-        // Redirect the user with a success message
-        return redirect()->route('books.index')->with('success', 'Book updated successfully.');
-    }
+        return redirect()->route('books.index', [
+            'sort' => session('last_sort', ''),
+            'page' => session('last_page', 1)
+        ])->with('success', 'Book updated successfully.');    }
 
-    // Delete a book
-    public function destroy(Book $book)
+    public function destroy($id)
     {
+        $book = Book::find($id);
+
+        if (!$book) {
+            return response()->view('errors.book-not-found', [], 404);
+        }
+
         $book->delete();
-        return redirect()->route('books.index')->with('success', 'Book deleted successfully');
+        return redirect()->route('books.index', [
+            'sort' => session('last_sort', ''),
+            'page' => session('last_page', 1)
+        ])->with('success', 'Book deleted successfully.');
     }
 }

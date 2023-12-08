@@ -1,3 +1,13 @@
+@if ($errors->any())
+    <div class="alert alert-danger text-xl font-bold" style="color: red;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <form action="{{ isset($book) ? route('books.update', $book) : route('books.store') }}" method="POST">
     @csrf
     @if(isset($book))
@@ -45,13 +55,23 @@
             </td>
         </tr>
 
-        <!-- ISBN -->
+        <!-- ISBN 10-->
         <tr>
             <td class="text-right pr-2">
-                <label for="isbn">ISBN:</label>
+                <label for="isbn">ISBN 10:</label>
             </td>
             <td>
-                <input type="text" id="isbn" name="isbn" value="{{ old('isbn', $book->isbn ?? '') }}">
+                <input type="text" id="isbn_10" name="isbn_10" value="{{ old('isbn_10', $book->isbn_10 ?? '') }}">
+            </td>
+        </tr>
+
+        <!-- ISBN 13-->
+        <tr>
+            <td class="text-right pr-2">
+                <label for="isbn">ISBN 13:</label>
+            </td>
+            <td>
+                <input type="text" id="isbn_13" name="isbn_13" value="{{ old('isbn_13', $book->isbn_13 ?? '') }}">
             </td>
         </tr>
 
@@ -125,12 +145,12 @@
             </td>
         </tr>
 
-
-
         <!-- Buttons -->
         <tr>
             <td colspan="2" class="text-right">
-                <a href="{{ route('books.index') }}" class="inline-block px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-700">Cancel</a>
+                <input type="hidden" name="sort" value="{{ request()->sort }}">
+                <input type="hidden" name="page" value="{{ request()->page }}">
+                <a href="{{ route('books.index', ['sort' => request()->sort, 'page' => request()->page]) }}" class="inline-block px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-700">Cancel</a>
                 <button type="submit" class="ml-2 inline-flex justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-700">{{ isset($book) ? 'Update' : 'Create' }}</button>
             </td>
         </tr>
