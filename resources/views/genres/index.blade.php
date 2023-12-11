@@ -34,9 +34,11 @@
                         <thead class="border border-stone-300">
                         <tr class="bg-stone-300">
                             <th colspan="5" class="p-2 text-left">
+                                @auth
                                 <a href="{{ route('genres.create', ['page' => request()->page]) }}"
                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                                     Create New Genre</a>
+                                @endauth
                             </th>
                         </tr>
                         <tr class="bg-stone-300">
@@ -51,24 +53,28 @@
                                 <td class="p-2 text-left">{{ $genre->name }}</td>
                                 <td class="p-2 text-left">{{ $genre->description ?? '' }}</td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('genres.show', ['genre' => $genre->id, 'page' => request()->page]) }}" class="text-blue-500 hover:text-blue-700">
+                                    <a href="{{ route('genres.show', ['genre' => $genre->id, 'page' => request()->page]) }}" class="text-blue-500 hover:text-blue-700" title="View genre details">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('genres.edit', ['genre' => $genre->id, 'page' => request()->page]) }}" class="text-green-500 hover:text-green-700">
+                                    @auth
+                                    <a href="{{ route('genres.edit', ['genre' => $genre->id, 'page' => request()->page]) }}" class="text-green-500 hover:text-green-700" title="Edit genre details">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
+                                    @endauth
                                 </td>
                                 <td class="p-2 text-center">
+                                    @auth
                                     <form action="{{ route('genres.destroy', 777) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="page" value="{{ request()->page }}">
-                                        <button type="submit" onclick="return confirm('\n{{ $genre->name }}\n\nAre you sure you want to delete this genre?');" class="text-red-500 hover:text-red-700">
+                                        <button type="submit" onclick="return confirm('\n{{ $genre->name }}\n\nAre you sure you want to delete this genre?');" class="text-red-500 hover:text-red-700" title="Delete genre">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endauth
                                 </td>
                             </tr>
                         @empty

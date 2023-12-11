@@ -25,9 +25,11 @@
                         <thead class="border border-stone-300">
                         <tr class="bg-stone-300">
                             <th class="p-2 text-left">
+                                @auth
                                 <a href="{{ route('books.create', ['sort' => request()->sort, 'page' => request()->page]) }}"
                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                                     Create New Book</a>
+                                @endauth
                             </th>
                             <th class="p-2 text-right">
                                 Sort by:
@@ -69,25 +71,29 @@
                                 <td class="p-2 text-left">{{ $book->genre_name ?? 'N/A' }}</td>
                                 <td class="p-2 text-left">{{ optional($book->author)->full_name }}</td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('books.show', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-blue-500 hover:text-blue-700">
+                                    <a href="{{ route('books.show', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-blue-500 hover:text-blue-700" title="View book details">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
                                 <td class="p-2 text-center">
-                                    <a href="{{ route('books.edit', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-green-500 hover:text-green-700">
+                                    @auth
+                                    <a href="{{ route('books.edit', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="text-green-500 hover:text-green-700" title="Edit book details">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
+                                    @endauth
                                 </td>
                                 <td class="p-2 text-center">
+                                    @auth
                                     <form action="{{ route('books.destroy', $book) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="sort" value="{{ request()->sort }}">
                                         <input type="hidden" name="page" value="{{ request()->page }}">
-                                        <button type="submit" onclick="return confirm('\n{{ $book->title }}\n\nAre you sure you want to delete this book?');" class="text-red-500 hover:text-red-700">
+                                        <button type="submit" onclick="return confirm('\n{{ $book->title }}\n\nAre you sure you want to delete this book?');" class="text-red-500 hover:text-red-700" title="Delete book">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endauth
                                 </td>
                             </tr>
                         @empty

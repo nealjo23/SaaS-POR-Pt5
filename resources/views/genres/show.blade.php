@@ -22,7 +22,9 @@
                 <tfoot>
                 <tr>
                     <td colspan="2" class="text-right p-2">
+                        @auth
                         <a href="{{ route('genres.edit', ['genre' => $genre->id, 'page' => request()->page]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                        @endauth
                         <a href="{{ route('genres.index', ['sort' => request()->sort, 'page' => request()->page]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Back to list</a>
                     </td>
                 </tr>

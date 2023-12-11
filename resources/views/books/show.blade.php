@@ -58,7 +58,9 @@
                 <tfoot>
                 <tr>
                     <td colspan="2" class="text-right p-2">
-                         <a href="{{ route('books.edit', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                        @auth
+                        <a href="{{ route('books.edit', ['book' => $book->id, 'sort' => request()->sort, 'page' => request()->page]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                        @endauth
                         <a href="{{ route('books.index', ['sort' => request()->sort, 'page' => request()->page]) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Back to list</a>
                     </td>
                 </tr>
